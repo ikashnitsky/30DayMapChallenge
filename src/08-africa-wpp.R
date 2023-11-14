@@ -111,7 +111,7 @@ df_plot %>%
         legend.justification = c(.5, .5),
         legend.background = element_rect(color = NA, fill = "#bbffff"),
         text = element_text(face = 2, color = "#044444"),
-        plot.caption = element_text(color = "#dafa26"),
+        plot.caption = element_text(color = "#269292", size = 8, hjust = .5),
         plot.background = element_rect(color = NA, fill = "#eeffff"),
     )+
     labs(
@@ -155,7 +155,7 @@ map_func <- function(choose_year = 2020){
             legend.justification = c(.5, .5),
             legend.background = element_rect(color = NA, fill = "#bbffff"),
             text = element_text(face = 2, color = "#044444"),
-            plot.caption = element_text(color = "#dafa26"),
+            plot.caption = element_text(color = "#269292aa"),
             plot.background = element_rect(color = NA, fill = "#eeffff"),
         )+
         labs(

@@ -12,8 +12,10 @@ library(rmapshaper)
 library(cowplot)
 library(ggimage)
 library(ggflags)
+library(geomtextpath)
 library(showtext)
 sysfonts::font_add_google("Atkinson Hyperlegible", "ah")
+sysfonts::font_add_google("Pacifico", "pa")
 showtext_auto()
 library(countrycode)
 
@@ -146,8 +148,7 @@ country_borders <- lat_outline %>%
     rmapshaper::ms_innerlines()
 
 # tally number of wins by country
-n_wins <- df %>%
-    st_drop_geometry() %>%
+n_wins <- logos_years %>%
     group_by(cntr) %>%
     summarise(n_wins = n()) %>%
     ungroup()
@@ -165,15 +166,23 @@ df_map <- lat_outline %>%
 df_map %>%
     ggplot()+
     geom_sf(color = NA, aes(fill = n_wins))+
-    geom_sf(data = country_borders, color = "#eeffff")+
+    geom_sf(data = country_borders, color = "#ccffff")+
     geom_sf(
-        data = df, alpha = .25, size = 3, color = "#dafa26"
+        data = df, aes(size = wins), alpha = .5,
+        shape = 21,
+        color = "#dafa26", fill = "#dafa26" %>% prismatic::clr_darken()
     )+
     scale_fill_viridis_b(option = "G", breaks = 1:10, begin = .1)+
+    scale_size_area(max_size = 7, guide = "none")+
     theme_map(font_family = "ah")+
     theme(legend.position = "none")
 
 the_map <- last_plot()
+
+# constants for plot
+n_wins_c <- c(25, 23, 8, 3, 1, 0)
+n_wins_compl <- c(24, 22:9, 7:4, 2)
+
 
 # draw legend manually
 df_map %>%
@@ -185,55 +194,66 @@ df_map %>%
     ) %>%
     ungroup() %>%
     ggplot()+
+    scale_color_viridis_b(option = "G", breaks = 1:24, begin = .1, limits = c(0, 25))+
+    annotate(
+        "point",
+        x = 1 -sin(((n_wins_compl)/6))/5, y = n_wins_compl,
+        size = 7, shape = 16,
+        color = viridis::mako(25, begin = .1)[n_wins_compl+1]
+    )+
     geom_point(
-        aes(x = 1 -sin(((n_wins)/3))/5, y = n_wins, color = n_wins),
+        aes(x = 1 -sin(((n_wins)/6))/5, y = n_wins, color = n_wins),
         size = 12, shape = 16
     )+
     geom_flag(
-        aes(country = cntr, x = 1 + x_ind/5 -sin(((n_wins)/3))/5, y = n_wins), size = 7
+        aes(country = cntr, x = 1 + x_ind/5 -sin(((n_wins)/6))/5, y = n_wins), size = 7
     )+
-    scale_color_viridis_b(option = "G", breaks = 1:10, begin = .1, limits = c(0, 11))+
     annotate(
         "text",
-        label = c(11, 8, 2, 1, 0),
-        x = 1 -sin(((c(11, 8, 2, 1, 0))/3))/5, y = c(11, 8, 2, 1, 0),
+        label = n_wins_c,
+        x = 1 -sin(((n_wins_c)/6))/5, y = n_wins_c,
         size = 5, fontface = 2,
-        color = viridis::mako(12, begin = .1)[c(12, 11, 10, 4, 1)] %>% rev
-    )+
-    annotate(
-        "point",
-        x = 1 -sin(((c(10, 9, 7:3))/3))/5, y = c(10, 9, 7:3),
-        size = 9, shape = 16,
-        color = viridis::mako(12, begin = .1)[c(10, 9, 7:3)+1]
+        color = viridis::mako(26, begin = .1)[n_wins_c+1] %>% rev
     )+
     theme_void(base_family = "ah")+
     theme(legend.position = "none")+
-    coord_flip(xlim = c(.5, 2), ylim = c(0, 12))
+    coord_flip(xlim = c(.5, 2), ylim = c(0, 26))
 
 the_legend <- last_plot()
+
+# curved title and subtitle
+df_curved <- bind_rows(
+    tibble(
+        x = (1:99),
+        y = (95 + sin((1:99)/(pi*10))*5),
+        z = "Copa Libertadores winners",
+        size = 9
+    ),
+    tibble(
+        x = (1:99),
+        y = (2 - sin((1:99)/(pi*10))*3),
+        z = "#30DayMapChallenge 12: South America // Data: Wikipedia // Ilya Kashnitsky @ikashnitsky.phd",
+        size = 2.7
+    )
+)
+
+df_curved %>%
+    ggplot(aes(x, y, label = z))+
+    geom_textpath(aes(size = size), color = "#044444", family = "pa")+
+    coord_cartesian(xlim = c(0, 100), ylim = c(0, 100))+
+    scale_size_identity()+
+    theme_void()
+
+the_cutved_text <- last_plot()
 
 
 # assemble
 ggdraw()+
     draw_plot(plot_logos)+
     draw_plot(the_map, x = .35, width = .3, y = .3, height = .4)+
-    draw_plot(the_legend, x = .05, width = .95, y = .01, height = .3)+
-    labs(
-        caption =
-    )+
-    annotate(
-        "text",
-        label = c(
-            "Copa Libertadores winners",
-            "#30DayMapChallenge 12: South America // Data: Wikipedia // Ilya Kashnitsky, @ikashnitsky.phd"
-        ),
-        x = .5, y = c(.9, .03), size = c(9, 2.7), color = c("#044444", "#269292"),
-        family = "ah", fontface = 2
-    )
+    draw_plot(the_legend, x = .05, width = .95, y = .03, height = .3)+
+    draw_plot(the_cutved_text)
 
 out <- last_plot()
 
 ggsave("fig/12-south-america-copa.pdf", out, width = 5, height = 5, bg = "#eeffff")
-
-
-

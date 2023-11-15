@@ -40,7 +40,7 @@ bb_dk <- gd_dk %>% st_bbox()
 
 
 # OSM data
-q <- opq (bb_dk) %>%
+q <- opq(bb_dk) %>%
     add_osm_feature (key = "amenity", value = "restaurant")
 
 rest <- osmdata_sf(q)

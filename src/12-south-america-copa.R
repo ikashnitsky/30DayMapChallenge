@@ -39,7 +39,7 @@ df <- tibble::tribble(
                        ~club, ~wins,                                     ~location,                               ~coords,                                                                                                                                                                                                     ~logo,
              "Independiente",    7L, "Avellaneda, Greater Buenos Aires, Argentina",   "-34.66981836521815, -58.37123704861423",                                     "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Escudo_del_Club_Atl%C3%A9tico_Independiente.svg/270px-Escudo_del_Club_Atl%C3%A9tico_Independiente.svg.png",
               "Boca Juniors",    6L,            "La Boca, Buenos Aires, Argentina",  "-34.634484429553034, -58.36327055244764",                                                                                     "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Boca_Juniors_logo18.svg/240px-Boca_Juniors_logo18.svg.png",
-                   "Peñarol",    5L,                "Peñarol, Montevideo, Uruguay",  "-34.82465335958416, -56.197719497774756",                                                                       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/225px-Escudo_del_C_A_River_Plate.svg.png",
+                   "Peñarol",    5L,                "Peñarol, Montevideo, Uruguay",  "-34.82465335958416, -56.197719497774756",                                                                       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Escudo_del_Club_Atl%C3%A9tico_Pe%C3%B1arol.svg/440px-Escudo_del_Club_Atl%C3%A9tico_Pe%C3%B1arol.svg.png",
                "River Plate",    4L,           "Belgrano, Buenos Aires, Argentina",  "-34.561829709416465, -58.45739529245968",                                                                       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Escudo_del_C_A_River_Plate.svg/225px-Escudo_del_C_A_River_Plate.svg.png",
                "Estudiantes",    4L,                         "La Plata, Argentina",    "-34.91965669447612, -57.9538580580413",                                                         "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Escudo_de_Estudiantes_de_La_Plata.svg/165px-Escudo_de_Estudiantes_de_La_Plata.svg.png",
                    "Olimpia",    3L,                          "Asunción, Paraguay",  "-25.26547518730986, -57.578524621112024",                                                                                              "https://upload.wikimedia.org/wikipedia/en/thumb/4/45/Club_Olimpia_logo.svg/330px-Club_Olimpia_logo.svg.png",
@@ -140,8 +140,9 @@ world_outline <- spData::world %>%
 lat_outline <- world_outline %>%
     st_transform(crs = 8980) %>%
     filter(
-        subregion == "South America"
-    ) # get rid of Antarctica
+        subregion == "South America",
+        !iso_a2 %in% c("FK", "GY", "SR") # get rid of non-football countries
+    )
 
 # borders between countries
 country_borders <- lat_outline %>%
@@ -172,7 +173,7 @@ df_map %>%
         shape = 21,
         color = "#dafa26", fill = "#dafa26" %>% prismatic::clr_darken()
     )+
-    scale_fill_viridis_b(option = "G", breaks = 1:10, begin = .1)+
+    scale_fill_viridis_b(option = "G", breaks = 1:24, begin = .1)+
     scale_size_area(max_size = 7, guide = "none")+
     theme_map(font_family = "ah")+
     theme(legend.position = "none")

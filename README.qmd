@@ -1,6 +1,6 @@
 ---
-title: "readme"
-format: gfm
+title: ""
+format: html
 ---
 
 # My participation in #30DayMapChallenge, November 2023
@@ -21,3 +21,15 @@ format: gfm
 ## 2023-11-01 | points | [bsky](https://bsky.app/profile/ikashnitsky.phd/post/3kd5pr6o6xj2t) | [fosstodon](https://fosstodon.org/@ikashnitsky/111337430617092755) | [blog](https://ikashnitsky.phd/2023/geocoding/)
 
 {{< mastodon "https://fosstodon.org/@ikashnitsky/111337430617092755" >}}
+
+
+
+## 2023-11-02 | lines | [bsky](https://bsky.app/profile/ikashnitsky.phd/post/) | [fosstodon](https://fosstodon.org/@ikashnitsky/) 
+{{< mastodon "https://fosstodon.org/@ikashnitsky/" >}}
+
+
+```{r index, echo=FALSE}
+library(fs)
+file_copy(path = "README.html", new_path = "index.html", overwrite = TRUE)
+```
+

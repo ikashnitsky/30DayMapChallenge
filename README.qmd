@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "readme"
 format: gfm
 ---
 
@@ -19,13 +19,5 @@ format: gfm
 
 
 ## 2023-11-01 | points | [bsky](https://bsky.app/profile/ikashnitsky.phd/post/3kd5pr6o6xj2t) | [fosstodon](https://fosstodon.org/@ikashnitsky/111337430617092755) | [blog](https://ikashnitsky.phd/2023/geocoding/)
+
 {{< mastodon "https://fosstodon.org/@ikashnitsky/111337430617092755" >}}
-
-
-
-
-```{r index, echo=FALSE}
-library(fs)
-file_copy(path = "README.md", new_path = "index.md", overwrite = TRUE)
-```
-
